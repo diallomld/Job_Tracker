@@ -3,6 +3,8 @@ import { useLocalStorage } from './hooks/useLocalStorage';
 import { Dashboard } from './components/Dashboard';
 import { ApplicationForm } from './components/ApplicationForm';
 import { KanbanBoard } from './components/KanbanBoard';
+import { Auth } from './components/Auth';
+import { supabase } from './lib/supabase';
 import './App.css';
 
 const initialApplications = [
@@ -27,9 +29,24 @@ const initialApplications = [
 ];
 
 function App() {
+  const [session, setSession] = useState(null);
   const [applications, setApplications] = useLocalStorage('job-tracker-apps', initialApplications);
   const [showForm, setShowForm] = useState(false);
   const [theme, setTheme] = useLocalStorage('job-tracker-theme', 'dark');
+
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setSession(session);
+    });
+
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_event, session) => {
+      setSession(session);
+    });
+
+    return () => subscription.unsubscribe();
+  }, []);
 
   useEffect(() => {
     document.documentElement.setAttribute('data-theme', theme);
@@ -56,9 +73,13 @@ function App() {
     );
   };
 
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
+  };
+
   return (
     <div className="app-container" style={{ margin: '0 auto', maxWidth: '1200px', padding: '2rem 1rem' }}>
-      <header style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '3rem' }}>
+      <header style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '3rem', flexWrap: 'wrap', gap: '1rem' }}>
         <div>
           <h1 className="gradient-text" style={{ fontSize: '2.5rem', marginBottom: '0.5rem', letterSpacing: '-0.02em' }}>Job Tracker</h1>
           <p style={{ color: 'var(--text-secondary)' }}>Gérez vos candidatures élégamment.</p>
@@ -85,48 +106,67 @@ function App() {
               <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
             )}
           </button>
-          <button
-            className="glass-panel"
-            style={{
-              padding: '0.75rem 1.5rem',
-              borderRadius: '99px',
-              color: 'var(--text-primary)',
-              fontWeight: '600',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '0.5rem',
-              border: '1px solid var(--accent-primary)',
-              background: 'rgba(99, 102, 241, 0.1)'
-            }}
-            onClick={() => setShowForm(!showForm)}
-          >
-            {showForm ? 'Annuler' : '+ Nouvelle Candidature'}
-          </button>
+
+          {session && (
+            <>
+              <button
+                className="glass-panel"
+                style={{
+                  padding: '0.75rem 1.5rem',
+                  borderRadius: '99px',
+                  color: 'var(--text-primary)',
+                  fontWeight: '600',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '0.5rem',
+                  border: '1px solid var(--accent-primary)',
+                  background: 'rgba(99, 102, 241, 0.1)'
+                }}
+                onClick={() => setShowForm(!showForm)}
+              >
+                {showForm ? 'Annuler' : '+ Nouvelle Candidature'}
+              </button>
+
+              <button
+                onClick={handleLogout}
+                style={{ background: 'none', border: 'none', color: 'var(--status-rejected)', cursor: 'pointer', fontWeight: 'bold' }}
+                title="Se déconnecter"
+              >
+                Déconnexion
+              </button>
+            </>
+          )}
         </div>
       </header>
 
       <main>
-        <Dashboard applications={applications} />
+        {!session ? (
+          <Auth onAuthSuccess={setSession} />
+        ) : (
+          <>
+            <Dashboard applications={applications} />
 
-        {showForm && (
-          <ApplicationForm onAdd={handleAddApplication} />
-        )}
+            {showForm && (
+              <ApplicationForm onAdd={handleAddApplication} />
+            )}
 
-        <div style={{ marginTop: '3rem' }}>
-          <h2 style={{ fontSize: '1.5rem', marginBottom: '1.5rem', color: 'var(--text-primary)' }}>Mes Candidatures</h2>
+            <div style={{ marginTop: '3rem' }}>
+              <h2 style={{ fontSize: '1.5rem', marginBottom: '1.5rem', color: 'var(--text-primary)' }}>Mes Candidatures</h2>
 
-          {applications.length === 0 ? (
-            <div className="glass-panel" style={{ padding: '3rem', textAlign: 'center', color: 'var(--text-secondary)' }}>
-              <p>Aucune candidature pour le moment. Commencez par en ajouter une !</p>
+              {applications.length === 0 ? (
+                <div className="glass-panel" style={{ padding: '3rem', textAlign: 'center', color: 'var(--text-secondary)' }}>
+                  <p>Aucune candidature pour le moment. Commencez par en ajouter une !</p>
+                </div>
+              ) : (
+                <KanbanBoard
+                  applications={applications}
+                  onDelete={handleDeleteApplication}
+                  onStatusChange={handleStatusChange}
+                />
+              )}
             </div>
-          ) : (
-            <KanbanBoard
-              applications={applications}
-              onDelete={handleDeleteApplication}
-              onStatusChange={handleStatusChange}
-            />
-          )}
-        </div>
+          </>
+        )}
       </main>
     </div>
   );
