@@ -4,7 +4,11 @@ import styles from './TodoItem.module.css';
 export function TodoItem({ todo, onDelete, onStatusChange, isKanban = false }) {
     const handleDragStart = (e) => {
         if (!isKanban) return;
+        e.stopPropagation();
+        e.dataTransfer.effectAllowed = 'move';
         e.dataTransfer.setData('todoId', todo.id);
+        // Required for Firefox and generic DnD support
+        e.dataTransfer.setData('text/plain', todo.id);
     };
 
     const formatDate = (dateStr) => {
@@ -21,7 +25,7 @@ export function TodoItem({ todo, onDelete, onStatusChange, isKanban = false }) {
         return (
             <div
                 className={styles.kanbanCard}
-                draggable
+                draggable="true"
                 onDragStart={handleDragStart}
             >
                 <div className={styles.cell}>

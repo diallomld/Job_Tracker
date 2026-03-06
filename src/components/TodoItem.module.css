@@ -21,6 +21,9 @@
     padding: 1rem;
     margin-bottom: 0.75rem;
     cursor: grab;
+    position: relative;
+    user-select: none;
+    transition: transform 0.2s, box-shadow 0.2s;
 }
 
 .kanbanCard:active {

@@ -66,4 +66,30 @@ describe('TodoManager Component', () => {
         const input = screen.getByPlaceholderText(/Nouvelle tâche.../i);
         expect(input).toBeDefined();
     });
+
+    it('supprime un todo après confirmation', async () => {
+        const mockData = [{ id: '1', title: 'Task to delete', status: 'todo', priority: 'medium' }];
+        supabase.from.mockReturnValueOnce({
+            select: vi.fn(() => ({
+                order: vi.fn(() => Promise.resolve({ data: mockData, error: null }))
+            })),
+            delete: vi.fn(() => ({
+                eq: vi.fn(() => Promise.resolve({ error: null }))
+            }))
+        });
+
+        window.confirm = vi.fn(() => true);
+        render(<TodoManager session={mockSession} />);
+
+        await waitFor(() => {
+            expect(screen.getByText('Task to delete')).toBeDefined();
+        });
+
+        const deleteBtn = screen.getByText('×');
+        fireEvent.click(deleteBtn);
+
+        await waitFor(() => {
+            expect(screen.queryByText('Task to delete')).toBeNull();
+        });
+    });
 });
