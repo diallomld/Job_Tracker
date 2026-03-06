@@ -66,7 +66,7 @@ describe('TodoManager Component', () => {
         const addBtn = screen.getByText('+ Nouvelle Tâche');
         fireEvent.click(addBtn);
 
-        expect(screen.getByPlaceholderText(/Ex: Relancer l'entreprise/i)).toBeDefined();
+        expect(screen.getByPlaceholderText(/Ex: Préparer l'entretien/i)).toBeDefined();
         expect(screen.getByText('Annuler')).toBeDefined();
     });
 });
