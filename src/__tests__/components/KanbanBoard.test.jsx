@@ -1,6 +1,6 @@
 import { render, screen, fireEvent } from '@testing-library/react';
 import { describe, it, expect, vi } from 'vitest';
-import { KanbanBoard } from './KanbanBoard';
+import { KanbanBoard } from '../../components/KanbanBoard';
 
 describe('KanbanBoard Integration', () => {
     const apps = [
