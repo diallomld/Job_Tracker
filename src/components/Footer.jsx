@@ -52,9 +52,6 @@ export function Footer() {
 
             <div className={styles.copyright}>
                 <p>© {new Date().getFullYear()} Horizon Teck. Tous droits réservés.</p>
-                <p style={{ marginTop: '0.25rem', opacity: 0.8, fontSize: '0.75rem' }}>
-                    Propulsé par l'IA et le Vibe Coding.
-                </p>
             </div>
         </footer>
     );
