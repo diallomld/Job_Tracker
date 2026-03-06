@@ -51,7 +51,7 @@ export function Footer() {
             </div>
 
             <div className={styles.copyright}>
-                <p>© {new Date().getFullYear()} Horizon Teck. Tous droits réservés.</p>
+                <p>© {new Date().getFullYear()} Horizon Tech. Tous droits réservés.</p>
             </div>
         </footer>
     );

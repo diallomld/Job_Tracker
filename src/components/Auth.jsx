@@ -11,20 +11,34 @@ export function Auth({ onAuthSuccess }) {
     const [fullName, setFullName] = useState('');
     const [phone, setPhone] = useState('');
 
+    const [isForgotPassword, setIsForgotPassword] = useState(false);
+    const [successMsg, setSuccessMsg] = useState('');
+
     const handleAuth = async (e) => {
         e.preventDefault();
         setLoading(true);
         setErrorMsg('');
+        setSuccessMsg('');
 
         try {
             let result;
-            if (isLogin) {
+            const redirectUrl = window.location.origin;
+
+            if (isForgotPassword) {
+                result = await supabase.auth.resetPasswordForEmail(email, {
+                    redirectTo: `${redirectUrl}/reset-password`,
+                });
+                if (!result.error) {
+                    setSuccessMsg("Email de réinitialisation envoyé ! Vérifiez votre boîte mail.");
+                }
+            } else if (isLogin) {
                 result = await supabase.auth.signInWithPassword({ email, password });
             } else {
                 result = await supabase.auth.signUp({
                     email,
                     password,
                     options: {
+                        emailRedirectTo: redirectUrl,
                         data: {
                             full_name: fullName,
                             phone_number: phone
@@ -41,10 +55,9 @@ export function Auth({ onAuthSuccess }) {
 
             if (result.error) throw result.error;
 
-            if (!isLogin && result.data?.user) {
-                // Auto sign-in or check email verification depending on supabase project settings
+            if (!isLogin && !isForgotPassword && result.data?.user) {
                 if (!result.data.session) {
-                    setErrorMsg("Inscription réussie ! Veuillez vérifier votre boîte mail si nécessaire, ou connectez-vous.");
+                    setSuccessMsg("Inscription réussie ! Veuillez vérifier votre boîte mail.");
                     setIsLogin(true);
                 } else {
                     onAuthSuccess(result.data.session);
@@ -64,12 +77,18 @@ export function Auth({ onAuthSuccess }) {
         <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '60vh' }}>
             <div className={`glass-panel ${styles.formContainer}`} style={{ maxWidth: '400px', width: '100%', padding: '2rem' }}>
                 <h2 style={{ marginBottom: '1.5rem', fontSize: '1.5rem', textAlign: 'center' }}>
-                    {isLogin ? 'Connexion' : 'Inscription'}
+                    {isForgotPassword ? 'Réinitialisation' : (isLogin ? 'Connexion' : 'Inscription')}
                 </h2>
 
                 {errorMsg && (
                     <div style={{ backgroundColor: 'rgba(239, 68, 68, 0.1)', color: 'var(--status-rejected)', padding: '0.75rem', borderRadius: '8px', marginBottom: '1rem', fontSize: '0.875rem' }}>
                         {errorMsg}
+                    </div>
+                )}
+
+                {successMsg && (
+                    <div style={{ backgroundColor: 'rgba(16, 185, 129, 0.1)', color: 'var(--status-accepted)', padding: '0.75rem', borderRadius: '8px', marginBottom: '1rem', fontSize: '0.875rem' }}>
+                        {successMsg}
                     </div>
                 )}
 
@@ -86,20 +105,23 @@ export function Auth({ onAuthSuccess }) {
                             onChange={(e) => setEmail(e.target.value)}
                         />
                     </div>
-                    <div className={styles.inputGroup}>
-                        <label htmlFor="password">Mot de passe</label>
-                        <input
-                            id="password"
-                            className={styles.inputField}
-                            type="password"
-                            placeholder="••••••••"
-                            value={password}
-                            required
-                            onChange={(e) => setPassword(e.target.value)}
-                        />
-                    </div>
 
-                    {!isLogin && (
+                    {!isForgotPassword && (
+                        <div className={styles.inputGroup}>
+                            <label htmlFor="password">Mot de passe</label>
+                            <input
+                                id="password"
+                                className={styles.inputField}
+                                type="password"
+                                placeholder="••••••••"
+                                value={password}
+                                required
+                                onChange={(e) => setPassword(e.target.value)}
+                            />
+                        </div>
+                    )}
+
+                    {!isLogin && !isForgotPassword && (
                         <>
                             <div className={styles.inputGroup}>
                                 <label htmlFor="fullName">Nom complet (Optionnel)</label>
@@ -127,17 +149,35 @@ export function Auth({ onAuthSuccess }) {
                     )}
 
                     <button type="submit" className={styles.submitBtn} disabled={loading} style={{ width: '100%', justifyContent: 'center', marginTop: '1rem' }}>
-                        {loading ? 'Chargement...' : (isLogin ? 'Se connecter' : "S'inscrire")}
+                        {loading ? 'Chargement...' : (isForgotPassword ? 'Envoyer lien' : (isLogin ? 'Se connecter' : "S'inscrire"))}
                     </button>
                 </form>
 
-                <div style={{ textAlign: 'center', marginTop: '1.5rem' }}>
+                <div style={{ textAlign: 'center', marginTop: '1.5rem', display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+                    {!isForgotPassword && isLogin && (
+                        <button
+                            type="button"
+                            onClick={() => setIsForgotPassword(true)}
+                            style={{ background: 'none', border: 'none', color: 'var(--accent-primary)', cursor: 'pointer', fontSize: '0.875rem' }}
+                        >
+                            Mot de passe oublié ?
+                        </button>
+                    )}
+
                     <button
                         type="button"
-                        onClick={() => { setIsLogin(!isLogin); setErrorMsg(''); }}
+                        onClick={() => {
+                            if (isForgotPassword) {
+                                setIsForgotPassword(false);
+                            } else {
+                                setIsLogin(!isLogin);
+                            }
+                            setErrorMsg('');
+                            setSuccessMsg('');
+                        }}
                         style={{ background: 'none', border: 'none', color: 'var(--text-secondary)', cursor: 'pointer', textDecoration: 'underline', fontSize: '0.875rem' }}
                     >
-                        {isLogin ? "Pas encore de compte ? S'inscrire" : 'Déjà un compte ? Se connecter'}
+                        {isForgotPassword ? 'Retour à la connexion' : (isLogin ? "Pas encore de compte ? S'inscrire" : 'Déjà un compte ? Se connecter')}
                     </button>
                 </div>
             </div>
