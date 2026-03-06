@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { Dashboard } from './components/Dashboard';
 import { ApplicationForm } from './components/ApplicationForm';
 import { KanbanBoard } from './components/KanbanBoard';
@@ -10,26 +10,7 @@ import { usePostHog } from '@posthog/react';
 import { supabase } from './lib/supabase';
 import './App.css';
 
-const initialApplications = [
-  {
-    id: '1',
-    company: 'TechCorp',
-    role: 'Développeur Fullstack',
-    type: 'CDI',
-    status: 'interview',
-    date: '2026-02-15',
-    url: 'https://example.com'
-  },
-  {
-    id: '2',
-    company: 'StartupStudio',
-    role: 'Frontend Engineer',
-    type: 'CDD',
-    status: 'pending',
-    date: '2026-03-01',
-    url: ''
-  }
-];
+
 
 function App() {
   const posthog = usePostHog();
@@ -61,7 +42,7 @@ function App() {
     });
 
     return () => subscription.unsubscribe();
-  }, []);
+  }, [posthog]);
 
   useEffect(() => {
     document.documentElement.setAttribute('data-theme', theme);
@@ -99,7 +80,7 @@ function App() {
 
   const handleAddApplication = async (newApp) => {
     try {
-      const { id, ...appData } = newApp; // Remove local id if present
+      const { id: _id, ...appData } = newApp; // Remove local id if present
       const { data, error } = await supabase
         .from('applications')
         .insert([{ ...appData, user_id: session.user.id }])

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { ApplicationCard } from './ApplicationCard';
 import styles from './KanbanBoard.module.css';
 

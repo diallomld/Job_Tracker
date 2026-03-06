@@ -1,7 +1,6 @@
-import React from 'react';
 import styles from './TodoItem.module.css';
 
-export function TodoItem({ todo, onDelete, onStatusChange, isKanban = false }) {
+export function TodoItem({ todo, onDelete, isKanban = false }) {
     const handleDragStart = (e) => {
         if (!isKanban) return;
         e.stopPropagation();

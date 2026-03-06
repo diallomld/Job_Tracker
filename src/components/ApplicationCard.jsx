@@ -1,4 +1,3 @@
-import React from 'react';
 import styles from './ApplicationCard.module.css';
 
 const statusLabels = {

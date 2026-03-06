@@ -1,4 +1,3 @@
-import React from 'react';
 import styles from './Dashboard.module.css';
 
 export function Dashboard({ applications }) {
@@ -10,11 +9,12 @@ export function Dashboard({ applications }) {
     const accepted = applications.filter(app => app.status === 'accepted').length;
 
     const stats = [
-        { label: 'Total Applications', value: total, color: 'var(--accent-primary)' },
-        { label: 'Pending', value: pending, color: 'var(--status-pending)' },
-        { label: 'Interviewing', value: interviewing, color: 'var(--status-interview)' },
+        { label: 'Total', value: total, color: 'var(--accent-primary)' },
+        { label: 'En attente', value: pending, color: 'var(--status-pending)' },
+        { label: 'Entretiens', value: interviewing, color: 'var(--status-interview)' },
         { label: 'À relancer', value: followup, color: 'var(--status-followup)' },
-        { label: 'Accepted', value: accepted, color: 'var(--status-accepted)' },
+        { label: 'Refusés', value: rejected, color: 'var(--status-rejected)' },
+        { label: 'Acceptés', value: accepted, color: 'var(--status-accepted)' },
     ];
 
     return (

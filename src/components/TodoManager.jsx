@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { supabase } from '../lib/supabase';
 import { TodoForm } from './TodoForm';
 import { TodoItem } from './TodoItem';
@@ -24,8 +24,8 @@ export function TodoManager({ session }) {
                 .order('created_at', { ascending: false });
             if (error) throw error;
             setTodos(data || []);
-        } catch (err) {
-            console.error('Error fetching todos:', err.message);
+        } catch (_err) {
+            console.error('Error fetching todos:', _err.message);
         } finally {
             setLoading(false);
         }
@@ -46,7 +46,7 @@ export function TodoManager({ session }) {
                     tag_count: data[0].tags?.length || 0
                 });
             }
-        } catch (err) {
+        } catch {
             alert('Erreur lors de l’ajout du todo');
         }
     };
@@ -61,7 +61,7 @@ export function TodoManager({ session }) {
             if (error) throw error;
             setTodos(todos.filter(t => t.id !== id));
             posthog.capture('todo_deleted', { id });
-        } catch (err) {
+        } catch {
             alert('Erreur lors de la suppression');
         }
     };
@@ -81,7 +81,7 @@ export function TodoManager({ session }) {
             }
 
             if (error) throw error;
-        } catch (err) {
+        } catch {
             setTodos(previousTodos);
             alert('Erreur lors de la mise à jour du statut');
         }

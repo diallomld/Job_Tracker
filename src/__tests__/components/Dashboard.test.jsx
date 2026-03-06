@@ -15,17 +15,18 @@ describe('Dashboard', () => {
     it('calculates statistics correctly based on applications status', () => {
         render(<Dashboard applications={apps} />);
 
-        expect(screen.getByText('Total Applications').previousSibling).toHaveTextContent('6');
-        expect(screen.getByText('Pending').previousSibling).toHaveTextContent('2');
-        expect(screen.getByText('Interviewing').previousSibling).toHaveTextContent('1');
+        expect(screen.getByText('Total').previousSibling).toHaveTextContent('6');
+        expect(screen.getByText('En attente').previousSibling).toHaveTextContent('2');
+        expect(screen.getByText('Entretiens').previousSibling).toHaveTextContent('1');
         expect(screen.getByText('À relancer').previousSibling).toHaveTextContent('1');
-        expect(screen.getByText('Accepted').previousSibling).toHaveTextContent('1');
+        expect(screen.getByText('Acceptés').previousSibling).toHaveTextContent('1');
+        expect(screen.getByText('Refusés').previousSibling).toHaveTextContent('1');
     });
 
     it('displays zeroes when there are no applications', () => {
         render(<Dashboard applications={[]} />);
 
-        expect(screen.getByText('Total Applications').previousSibling).toHaveTextContent('0');
-        expect(screen.getByText('Pending').previousSibling).toHaveTextContent('0');
+        expect(screen.getByText('Total').previousSibling).toHaveTextContent('0');
+        expect(screen.getByText('En attente').previousSibling).toHaveTextContent('0');
     });
 });
