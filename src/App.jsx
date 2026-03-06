@@ -3,6 +3,7 @@ import { Dashboard } from './components/Dashboard';
 import { ApplicationForm } from './components/ApplicationForm';
 import { KanbanBoard } from './components/KanbanBoard';
 import { Auth } from './components/Auth';
+import { UserProfile } from './components/UserProfile';
 import { Footer } from './components/Footer';
 import { supabase } from './lib/supabase';
 import './App.css';
