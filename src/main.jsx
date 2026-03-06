@@ -9,7 +9,11 @@ const options = {
   person_profiles: 'identified_only',
   capture_pageview: true,
   persistence: 'localStorage',
-  autocapture: true
+  autocapture: true,
+  session_recording: {
+    maskAllInputs: false, // Permet de voir ce qui est tapé (attention à la confidentialité en prod)
+    maskAllTextAttributes: false,
+  }
 }
 
 createRoot(document.getElementById('root')).render(
