@@ -4,14 +4,14 @@ import styles from './ApplicationForm.module.css';
 
 export function UserProfile({ session, onClose }) {
     const [loading, setLoading] = useState(false);
-    const [fullName, setFullName] = useState('');
-    const [phone, setPhone] = useState('');
+    const [fullName, setFullName] = useState(session?.user?.user_metadata?.full_name || '');
+    const [phone, setPhone] = useState(session?.user?.user_metadata?.phone_number || '');
     const [msg, setMsg] = useState(null);
 
     useEffect(() => {
         if (session?.user?.user_metadata) {
             setFullName(session.user.user_metadata.full_name || '');
-            setPhone(session.user.user_metadata.phone || '');
+            setPhone(session.user.user_metadata.phone_number || '');
         }
     }, [session]);
 
@@ -24,7 +24,7 @@ export function UserProfile({ session, onClose }) {
             const { error } = await supabase.auth.updateUser({
                 data: {
                     full_name: fullName,
-                    phone: phone,
+                    phone_number: phone,
                 }
             });
 

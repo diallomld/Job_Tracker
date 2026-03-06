@@ -27,7 +27,7 @@ export function Auth({ onAuthSuccess }) {
                     options: {
                         data: {
                             full_name: fullName,
-                            phone: phone
+                            phone_number: phone
                         }
                     }
                 });
@@ -43,14 +43,14 @@ export function Auth({ onAuthSuccess }) {
 
             if (!isLogin && result.data?.user) {
                 // Auto sign-in or check email verification depending on supabase project settings
-                if (!result.session) {
+                if (!result.data.session) {
                     setErrorMsg("Inscription réussie ! Veuillez vérifier votre boîte mail si nécessaire, ou connectez-vous.");
                     setIsLogin(true);
                 } else {
-                    onAuthSuccess(result.session);
+                    onAuthSuccess(result.data.session);
                 }
-            } else if (result.session) {
-                onAuthSuccess(result.session);
+            } else if (result.data.session) {
+                onAuthSuccess(result.data.session);
             }
 
         } catch (error) {
