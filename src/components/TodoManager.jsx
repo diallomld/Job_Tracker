@@ -100,7 +100,7 @@ export function TodoManager({ session }) {
                             className={view === 'list' ? styles.activeTab : ''}
                             onClick={() => setView('list')}
                         >
-                            Liste
+                            Tableau
                         </button>
                         <button
                             className={view === 'kanban' ? styles.activeTab : ''}
@@ -112,22 +112,32 @@ export function TodoManager({ session }) {
                 </div>
             </header>
 
-            <TodoForm onAdd={handleAddTodo} />
-
             {view === 'list' ? (
-                <div className={styles.listView}>
-                    {todos.length === 0 ? (
-                        <p className={styles.empty}>Aucune tâche pour le moment.</p>
-                    ) : (
-                        todos.map(todo => (
-                            <TodoItem
-                                key={todo.id}
-                                todo={todo}
-                                onDelete={handleDeleteTodo}
-                                onStatusChange={handleStatusChange}
-                            />
-                        ))
-                    )}
+                <div className={styles.tableContainer}>
+                    <div className={styles.tableHeader}>
+                        <div className={styles.headerCell}>Titre</div>
+                        <div className={styles.headerCell}>Priorité</div>
+                        <div className={styles.headerCell}>Échéance</div>
+                        <div className={styles.headerCell}>Tags</div>
+                        <div className={styles.headerCell}>Action</div>
+                    </div>
+
+                    <TodoForm onAdd={handleAddTodo} />
+
+                    <div className={styles.tableBody}>
+                        {todos.length === 0 ? (
+                            <p className={styles.empty}>Aucune tâche pour le moment.</p>
+                        ) : (
+                            todos.map(todo => (
+                                <TodoItem
+                                    key={todo.id}
+                                    todo={todo}
+                                    onDelete={handleDeleteTodo}
+                                    onStatusChange={handleStatusChange}
+                                />
+                            ))
+                        )}
+                    </div>
                 </div>
             ) : (
                 <div className={styles.kanbanView}>

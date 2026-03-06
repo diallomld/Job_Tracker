@@ -44,7 +44,7 @@ describe('TodoManager Component', () => {
             expect(screen.queryByText(/Chargement/i)).toBeNull();
         });
 
-        const listBtn = screen.getByText('Liste');
+        const listBtn = screen.getByText('Tableau');
         const kanbanBtn = screen.getByText('Kanban');
 
         fireEvent.click(kanbanBtn);

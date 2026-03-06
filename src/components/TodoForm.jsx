@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState } from 'react';
 import styles from './TodoForm.module.css';
 
 export function TodoForm({ onAdd }) {
@@ -7,24 +7,13 @@ export function TodoForm({ onAdd }) {
     const [date, setDate] = useState('');
     const [tagInput, setTagInput] = useState('');
     const [tags, setTags] = useState([]);
-    const [isExpanded, setIsExpanded] = useState(false);
-    const formRef = useRef(null);
-
-    useEffect(() => {
-        const handleClickOutside = (event) => {
-            if (formRef.current && !formRef.current.contains(event.target) && !title.trim()) {
-                setIsExpanded(false);
-            }
-        };
-        document.addEventListener('mousedown', handleClickOutside);
-        return () => document.removeEventListener('mousedown', handleClickOutside);
-    }, [title]);
 
     const handleAddTag = (e) => {
-        if (e.key === 'Enter' && tagInput.trim()) {
+        if ((e.key === 'Enter' || e.key === ',') && tagInput.trim()) {
             e.preventDefault();
-            if (!tags.includes(tagInput.trim())) {
-                setTags([...tags, tagInput.trim()]);
+            const newTag = tagInput.trim().replace(/,$/, '');
+            if (newTag && !tags.includes(newTag)) {
+                setTags([...tags, newTag]);
             }
             setTagInput('');
         }
@@ -36,10 +25,7 @@ export function TodoForm({ onAdd }) {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        if (!title.trim()) {
-            setIsExpanded(false);
-            return;
-        }
+        if (!title.trim()) return;
 
         onAdd({
             title,
@@ -53,93 +39,67 @@ export function TodoForm({ onAdd }) {
         setPriority('medium');
         setDate('');
         setTags([]);
-        setIsExpanded(false);
     };
 
     return (
-        <form
-            ref={formRef}
-            className={`glass-panel ${styles.formContainer}`}
-            onSubmit={handleSubmit}
-        >
-            <div className={styles.inlineInputWrapper} onClick={() => setIsExpanded(true)}>
-                <span className={styles.addIcon}>
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
-                </span>
+        <form className={styles.formRow} onSubmit={handleSubmit}>
+            <div className={styles.cell}>
                 <input
                     type="text"
                     className={styles.inputField}
                     value={title}
                     onChange={(e) => setTitle(e.target.value)}
-                    onFocus={() => setIsExpanded(true)}
-                    placeholder="Nouvelle tâche..."
+                    placeholder="+ Nouvelle tâche..."
                     autoComplete="off"
                 />
             </div>
 
-            {isExpanded && (
-                <div className={styles.expandedControls}>
-                    <div className={styles.controlItem}>
-                        <label>Priorité</label>
-                        <select
-                            className={styles.prioritySelect}
-                            value={priority}
-                            onChange={(e) => setPriority(e.target.value)}
-                        >
-                            <option value="low">L</option>
-                            <option value="medium">M</option>
-                            <option value="high">H</option>
-                        </select>
-                    </div>
+            <div className={styles.cell}>
+                <select
+                    className={styles.selectField}
+                    value={priority}
+                    onChange={(e) => setPriority(e.target.value)}
+                >
+                    <option value="low">Basse</option>
+                    <option value="medium">Moyenne</option>
+                    <option value="high">Haute</option>
+                </select>
+            </div>
 
-                    <div className={styles.controlItem}>
-                        <label>Date</label>
-                        <input
-                            type="date"
-                            className={styles.dateInput}
-                            value={date}
-                            onChange={(e) => setDate(e.target.value)}
-                        />
-                    </div>
+            <div className={styles.cell}>
+                <input
+                    type="date"
+                    className={styles.dateField}
+                    value={date}
+                    onChange={(e) => setDate(e.target.value)}
+                />
+            </div>
 
-                    <div className={styles.controlItem}>
-                        <label>Tags</label>
-                        <div className={styles.tagsContainer}>
-                            {tags.map((tag, index) => (
-                                <span key={index} className={styles.tag}>
-                                    {tag}
-                                    <span onClick={() => removeTag(index)} className={styles.removeTag}>×</span>
-                                </span>
-                            ))}
-                            <input
-                                type="text"
-                                className={styles.tagInput}
-                                value={tagInput}
-                                onChange={(e) => setTagInput(e.target.value)}
-                                onKeyDown={handleAddTag}
-                                placeholder="..."
-                            />
-                        </div>
-                    </div>
-
-                    <div className={styles.actions}>
-                        <button
-                            type="button"
-                            className={styles.cancelBtn}
-                            onClick={() => {
-                                setTitle('');
-                                setTags([]);
-                                setIsExpanded(false);
-                            }}
-                        >
-                            Annuler
-                        </button>
-                        <button type="submit" className={styles.submitBtn}>
-                            Enregistrer
-                        </button>
-                    </div>
+            <div className={styles.cell}>
+                <div className={styles.tagsWrapper}>
+                    {tags.map((tag, index) => (
+                        <span key={index} className={styles.tag}>
+                            {tag}
+                            <span onClick={() => removeTag(index)} className={styles.removeTag}>×</span>
+                        </span>
+                    ))}
+                    <input
+                        type="text"
+                        className={styles.inputField}
+                        value={tagInput}
+                        onChange={(e) => setTagInput(e.target.value)}
+                        onKeyDown={handleAddTag}
+                        placeholder="Tags..."
+                        style={{ width: '80px' }}
+                    />
                 </div>
-            )}
+            </div>
+
+            <div className={styles.cell}>
+                <button type="submit" className={styles.submitBtn} disabled={!title.trim()} title="Ajouter">
+                    +
+                </button>
+            </div>
         </form>
     );
 }
