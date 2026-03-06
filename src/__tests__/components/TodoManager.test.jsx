@@ -56,17 +56,14 @@ describe('TodoManager Component', () => {
         expect(screen.queryByText('À faire')).toBeNull(); // Titre de colonne kanban
     });
 
-    it('permet d\'ouvrir le formulaire d\'ajout', async () => {
+    it('permet d\'ajouter une tâche via le formulaire inline', async () => {
         render(<TodoManager session={mockSession} />);
 
         await waitFor(() => {
             expect(screen.queryByText(/Chargement/i)).toBeNull();
         });
 
-        const addBtn = screen.getByText('+ Nouvelle Tâche');
-        fireEvent.click(addBtn);
-
-        expect(screen.getByPlaceholderText(/Ex: Préparer l'entretien/i)).toBeDefined();
-        expect(screen.getByText('Annuler')).toBeDefined();
+        const input = screen.getByPlaceholderText(/Nouvelle tâche.../i);
+        expect(input).toBeDefined();
     });
 });

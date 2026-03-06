@@ -8,7 +8,6 @@ export function TodoManager({ session }) {
     const [todos, setTodos] = useState([]);
     const [loading, setLoading] = useState(true);
     const [view, setView] = useState('list'); // 'list' or 'kanban'
-    const [showForm, setShowForm] = useState(false);
 
     useEffect(() => {
         if (session) fetchTodos();
@@ -39,7 +38,6 @@ export function TodoManager({ session }) {
             if (error) throw error;
             if (data) {
                 setTodos([data[0], ...todos]);
-                setShowForm(false);
             }
         } catch (err) {
             alert('Erreur lors de l’ajout du todo');
@@ -112,15 +110,9 @@ export function TodoManager({ session }) {
                         </button>
                     </div>
                 </div>
-                <button
-                    className={`glass-panel ${styles.addBtn}`}
-                    onClick={() => setShowForm(!showForm)}
-                >
-                    {showForm ? 'Annuler' : '+ Nouvelle Tâche'}
-                </button>
             </header>
 
-            {showForm && <TodoForm onAdd={handleAddTodo} />}
+            <TodoForm onAdd={handleAddTodo} />
 
             {view === 'list' ? (
                 <div className={styles.listView}>
