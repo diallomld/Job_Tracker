@@ -4,6 +4,7 @@ import { ApplicationForm } from './components/ApplicationForm';
 import { KanbanBoard } from './components/KanbanBoard';
 import { Auth } from './components/Auth';
 import { UserProfile } from './components/UserProfile';
+import { TodoManager } from './components/TodoManager';
 import { Footer } from './components/Footer';
 import { supabase } from './lib/supabase';
 import './App.css';
@@ -35,6 +36,7 @@ function App() {
   const [loadingApps, setLoadingApps] = useState(false);
   const [showForm, setShowForm] = useState(false);
   const [showProfile, setShowProfile] = useState(false);
+  const [activeTab, setActiveTab] = useState('applications'); // 'applications' or 'todos'
   const [theme, setTheme] = useState(localStorage.getItem('job-tracker-theme') || 'dark');
 
   useEffect(() => {
@@ -233,11 +235,42 @@ function App() {
         </div>
       </header>
 
+      {session && !showProfile && (
+        <nav style={{ display: 'flex', gap: '2rem', marginBottom: '2rem', borderBottom: '1px solid var(--border-glass)' }}>
+          <button
+            onClick={() => setActiveTab('applications')}
+            style={{
+              padding: '0.75rem 0',
+              color: activeTab === 'applications' ? 'var(--accent-primary)' : 'var(--text-secondary)',
+              borderBottom: activeTab === 'applications' ? '2px solid var(--accent-primary)' : 'none',
+              fontWeight: '600',
+              fontSize: '1rem'
+            }}
+          >
+            Candidatures
+          </button>
+          <button
+            onClick={() => setActiveTab('todos')}
+            style={{
+              padding: '0.75rem 0',
+              color: activeTab === 'todos' ? 'var(--accent-primary)' : 'var(--text-secondary)',
+              borderBottom: activeTab === 'todos' ? '2px solid var(--accent-primary)' : 'none',
+              fontWeight: '600',
+              fontSize: '1rem'
+            }}
+          >
+            Ma To-Do List
+          </button>
+        </nav>
+      )}
+
       <main>
         {!session ? (
           <Auth onAuthSuccess={setSession} />
         ) : showProfile ? (
           <UserProfile session={session} onClose={() => setShowProfile(false)} />
+        ) : activeTab === 'todos' ? (
+          <TodoManager session={session} />
         ) : (
           <>
             <Dashboard applications={applications} />
