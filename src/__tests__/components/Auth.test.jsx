@@ -8,7 +8,8 @@ vi.mock('../../lib/supabase', () => ({
     supabase: {
         auth: {
             signInWithPassword: vi.fn(),
-            signUp: vi.fn()
+            signUp: vi.fn(),
+            resetPasswordForEmail: vi.fn()
         }
     }
 }));
@@ -82,6 +83,7 @@ describe('Auth Component', () => {
                 email: 'new@test.com',
                 password: 'newpass',
                 options: {
+                    emailRedirectTo: expect.any(String),
                     data: {
                         full_name: 'Jean Dupont',
                         phone_number: '0600000000'
@@ -89,6 +91,31 @@ describe('Auth Component', () => {
                 }
             });
             expect(mockOnAuthSuccess).toHaveBeenCalledWith({ access_token: '123' });
+        });
+    });
+
+    test('appelle resetPasswordForEmail lors de l\'oubli de mot de passe', async () => {
+        supabase.auth.resetPasswordForEmail.mockResolvedValue({ data: {}, error: null });
+
+        render(<Auth onAuthSuccess={vi.fn()} />);
+
+        // Ouvre le mode mot de passe oublié
+        fireEvent.click(screen.getByText(/mot de passe oublié \?/i));
+
+        expect(screen.getByRole('heading', { name: /réinitialisation/i })).toBeInTheDocument();
+
+        // Remplissage
+        fireEvent.change(screen.getByLabelText(/email/i), { target: { value: 'reset@test.com' } });
+
+        // Soumission
+        fireEvent.click(screen.getByRole('button', { name: /envoyer lien/i }));
+
+        await waitFor(() => {
+            expect(supabase.auth.resetPasswordForEmail).toHaveBeenCalledWith(
+                'reset@test.com',
+                { redirectTo: expect.stringContaining('/reset-password') }
+            );
+            expect(screen.getByText(/email de réinitialisation envoyé/i)).toBeInTheDocument();
         });
     });
 });
