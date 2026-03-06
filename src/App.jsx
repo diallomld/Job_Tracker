@@ -3,6 +3,7 @@ import { Dashboard } from './components/Dashboard';
 import { ApplicationForm } from './components/ApplicationForm';
 import { KanbanBoard } from './components/KanbanBoard';
 import { Auth } from './components/Auth';
+import { UserProfile } from './components/UserProfile';
 import { supabase } from './lib/supabase';
 import './App.css';
 
@@ -32,6 +33,7 @@ function App() {
   const [applications, setApplications] = useState([]);
   const [loadingApps, setLoadingApps] = useState(false);
   const [showForm, setShowForm] = useState(false);
+  const [showProfile, setShowProfile] = useState(false);
   const [theme, setTheme] = useState(localStorage.getItem('job-tracker-theme') || 'dark');
 
   useEffect(() => {
@@ -188,14 +190,35 @@ function App() {
                   fontWeight: '600',
                   display: 'flex',
                   alignItems: 'center',
-                  gap: '0.5rem',
-                  border: '1px solid var(--accent-primary)',
-                  background: 'rgba(99, 102, 241, 0.1)'
+                  background: 'var(--bg-glass)'
                 }}
-                onClick={() => setShowForm(!showForm)}
+                onClick={() => {
+                  setShowProfile(!showProfile);
+                  setShowForm(false);
+                }}
               >
-                {showForm ? 'Annuler' : '+ Nouvelle Candidature'}
+                {showProfile ? 'Fermer Profil' : 'Mon Profil'}
               </button>
+
+              {!showProfile && (
+                <button
+                  className="glass-panel"
+                  style={{
+                    padding: '0.75rem 1.5rem',
+                    borderRadius: '99px',
+                    color: 'var(--text-primary)',
+                    fontWeight: '600',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '0.5rem',
+                    border: '1px solid var(--accent-primary)',
+                    background: 'rgba(99, 102, 241, 0.1)'
+                  }}
+                  onClick={() => setShowForm(!showForm)}
+                >
+                  {showForm ? 'Annuler' : '+ Nouvelle Candidature'}
+                </button>
+              )}
 
               <button
                 onClick={handleLogout}
@@ -212,6 +235,8 @@ function App() {
       <main>
         {!session ? (
           <Auth onAuthSuccess={setSession} />
+        ) : showProfile ? (
+          <UserProfile session={session} onClose={() => setShowProfile(false)} />
         ) : (
           <>
             <Dashboard applications={applications} />

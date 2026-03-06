@@ -8,6 +8,8 @@ export function Auth({ onAuthSuccess }) {
     const [password, setPassword] = useState('');
     const [isLogin, setIsLogin] = useState(true);
     const [errorMsg, setErrorMsg] = useState('');
+    const [fullName, setFullName] = useState('');
+    const [phone, setPhone] = useState('');
 
     const handleAuth = async (e) => {
         e.preventDefault();
@@ -19,7 +21,16 @@ export function Auth({ onAuthSuccess }) {
             if (isLogin) {
                 result = await supabase.auth.signInWithPassword({ email, password });
             } else {
-                result = await supabase.auth.signUp({ email, password });
+                result = await supabase.auth.signUp({
+                    email,
+                    password,
+                    options: {
+                        data: {
+                            full_name: fullName,
+                            phone: phone
+                        }
+                    }
+                });
                 if (result.data?.user && result.data.user.identities?.length === 0) {
                     setErrorMsg("Cet utilisateur existe déjà. Veuillez vous connecter.");
                     setIsLogin(true);
@@ -87,6 +98,34 @@ export function Auth({ onAuthSuccess }) {
                             onChange={(e) => setPassword(e.target.value)}
                         />
                     </div>
+
+                    {!isLogin && (
+                        <>
+                            <div className={styles.inputGroup}>
+                                <label htmlFor="fullName">Nom complet (Optionnel)</label>
+                                <input
+                                    id="fullName"
+                                    className={styles.inputField}
+                                    type="text"
+                                    placeholder="Jean Dupont"
+                                    value={fullName}
+                                    onChange={(e) => setFullName(e.target.value)}
+                                />
+                            </div>
+                            <div className={styles.inputGroup}>
+                                <label htmlFor="phone">Téléphone (Optionnel)</label>
+                                <input
+                                    id="phone"
+                                    className={styles.inputField}
+                                    type="tel"
+                                    placeholder="+33 6 00 00 00 00"
+                                    value={phone}
+                                    onChange={(e) => setPhone(e.target.value)}
+                                />
+                            </div>
+                        </>
+                    )}
+
                     <button type="submit" className={styles.submitBtn} disabled={loading} style={{ width: '100%', justifyContent: 'center', marginTop: '1rem' }}>
                         {loading ? 'Chargement...' : (isLogin ? 'Se connecter' : "S'inscrire")}
                     </button>
