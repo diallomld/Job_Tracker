@@ -1,5 +1,7 @@
 # 🚀 Job Tracker App - SaaS Job Tracking
 
+![Frontend CI](https://github.com/USER/job-tracker/actions/workflows/ci.yml/badge.svg)
+
 Une application moderne et élégante pour gérer vos candidatures, avec un tableau Kanban, des statistiques en temps réel et une synchronisation cloud via Supabase.
 
 ## 🛠 Features
