@@ -6,6 +6,7 @@ import { Auth } from './components/Auth';
 import { UserProfile } from './components/UserProfile';
 import { TodoManager } from './components/TodoManager';
 import { Footer } from './components/Footer';
+import posthog from 'posthog-js';
 import { supabase } from './lib/supabase';
 import './App.css';
 
@@ -48,6 +49,14 @@ function App() {
       data: { subscription },
     } = supabase.auth.onAuthStateChange((_event, session) => {
       setSession(session);
+      if (session?.user) {
+        posthog.identify(session.user.id, {
+          email: session.user.email,
+          ...session.user.user_metadata
+        });
+      } else if (_event === 'SIGNED_OUT') {
+        posthog.reset();
+      }
     });
 
     return () => subscription.unsubscribe();
@@ -100,6 +109,11 @@ function App() {
       if (data) {
         setApplications(prev => [data[0], ...prev]);
         setShowForm(false);
+        posthog.capture('application_added', {
+          company: data[0].company,
+          role: data[0].role,
+          type: data[0].type
+        });
       }
     } catch (error) {
       console.error('Error adding application:', error);
@@ -117,6 +131,7 @@ function App() {
 
         if (error) throw error;
         setApplications(prev => prev.filter(app => app.id !== id));
+        posthog.capture('application_deleted', { id });
       } catch (error) {
         console.error('Error deleting application:', error);
         alert('Erreur lors de la suppression.');
@@ -136,6 +151,10 @@ function App() {
         .from('applications')
         .update({ status: newStatus })
         .eq('id', id);
+
+      if (!error) {
+        posthog.capture('application_status_changed', { id, newStatus });
+      }
 
       if (error) {
         // Revert on failure

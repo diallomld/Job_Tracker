@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { supabase } from '../lib/supabase';
 import { TodoForm } from './TodoForm';
 import { TodoItem } from './TodoItem';
+import posthog from 'posthog-js';
 import styles from './TodoManager.module.css';
 
 export function TodoManager({ session }) {
@@ -38,6 +39,11 @@ export function TodoManager({ session }) {
             if (error) throw error;
             if (data) {
                 setTodos([data[0], ...todos]);
+                posthog.capture('todo_added', {
+                    priority: data[0].priority,
+                    has_date: !!data[0].date,
+                    tag_count: data[0].tags?.length || 0
+                });
             }
         } catch (err) {
             alert('Erreur lors de l’ajout du todo');
@@ -53,6 +59,7 @@ export function TodoManager({ session }) {
                 .eq('id', id);
             if (error) throw error;
             setTodos(todos.filter(t => t.id !== id));
+            posthog.capture('todo_deleted', { id });
         } catch (err) {
             alert('Erreur lors de la suppression');
         }
@@ -67,6 +74,11 @@ export function TodoManager({ session }) {
                 .from('todos')
                 .update({ status: newStatus })
                 .eq('id', id);
+
+            if (!error) {
+                posthog.capture('todo_status_changed', { id, newStatus });
+            }
+
             if (error) throw error;
         } catch (err) {
             setTodos(previousTodos);
