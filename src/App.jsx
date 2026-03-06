@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { useLocalStorage } from './hooks/useLocalStorage';
 import { Dashboard } from './components/Dashboard';
 import { ApplicationForm } from './components/ApplicationForm';
 import { KanbanBoard } from './components/KanbanBoard';
@@ -30,9 +29,10 @@ const initialApplications = [
 
 function App() {
   const [session, setSession] = useState(null);
-  const [applications, setApplications] = useLocalStorage('job-tracker-apps', initialApplications);
+  const [applications, setApplications] = useState([]);
+  const [loadingApps, setLoadingApps] = useState(false);
   const [showForm, setShowForm] = useState(false);
-  const [theme, setTheme] = useLocalStorage('job-tracker-theme', 'dark');
+  const [theme, setTheme] = useState(localStorage.getItem('job-tracker-theme') || 'dark');
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
@@ -50,27 +50,97 @@ function App() {
 
   useEffect(() => {
     document.documentElement.setAttribute('data-theme', theme);
+    localStorage.setItem('job-tracker-theme', theme);
   }, [theme]);
 
   const toggleTheme = () => {
     setTheme(prev => prev === 'dark' ? 'light' : 'dark');
   };
 
-  const handleAddApplication = (newApp) => {
-    setApplications(prev => [newApp, ...prev]);
-    setShowForm(false);
-  };
+  useEffect(() => {
+    if (session) {
+      fetchApplications();
+    } else {
+      setApplications([]);
+    }
+  }, [session]);
 
-  const handleDeleteApplication = (id) => {
-    if (window.confirm('Voulez-vous vraiment supprimer cette candidature ?')) {
-      setApplications(prev => prev.filter(app => app.id !== id));
+  const fetchApplications = async () => {
+    setLoadingApps(true);
+    try {
+      const { data, error } = await supabase
+        .from('applications')
+        .select('*')
+        .order('created_at', { ascending: false });
+
+      if (error) throw error;
+      setApplications(data || []);
+    } catch (error) {
+      console.error('Error fetching applications:', error.message);
+    } finally {
+      setLoadingApps(false);
     }
   };
 
-  const handleStatusChange = (id, newStatus) => {
+  const handleAddApplication = async (newApp) => {
+    try {
+      const { id, ...appData } = newApp; // Remove local id if present
+      const { data, error } = await supabase
+        .from('applications')
+        .insert([{ ...appData, user_id: session.user.id }])
+        .select();
+
+      if (error) throw error;
+
+      if (data) {
+        setApplications(prev => [data[0], ...prev]);
+        setShowForm(false);
+      }
+    } catch (error) {
+      console.error('Error adding application:', error);
+      alert('Erreur lors de l\'ajout. Veuillez réessayer.');
+    }
+  };
+
+  const handleDeleteApplication = async (id) => {
+    if (window.confirm('Voulez-vous vraiment supprimer cette candidature ?')) {
+      try {
+        const { error } = await supabase
+          .from('applications')
+          .delete()
+          .eq('id', id);
+
+        if (error) throw error;
+        setApplications(prev => prev.filter(app => app.id !== id));
+      } catch (error) {
+        console.error('Error deleting application:', error);
+        alert('Erreur lors de la suppression.');
+      }
+    }
+  };
+
+  const handleStatusChange = async (id, newStatus) => {
+    // Optimistic UI update
+    const previousApps = [...applications];
     setApplications(prev =>
       prev.map(app => app.id === id ? { ...app, status: newStatus } : app)
     );
+
+    try {
+      const { error } = await supabase
+        .from('applications')
+        .update({ status: newStatus })
+        .eq('id', id);
+
+      if (error) {
+        // Revert on failure
+        setApplications(previousApps);
+        throw error;
+      }
+    } catch (error) {
+      console.error('Error updating status:', error);
+      alert('Erreur: Impossible de mettre à jour le statut.');
+    }
   };
 
   const handleLogout = async () => {
@@ -153,7 +223,11 @@ function App() {
             <div style={{ marginTop: '3rem' }}>
               <h2 style={{ fontSize: '1.5rem', marginBottom: '1.5rem', color: 'var(--text-primary)' }}>Mes Candidatures</h2>
 
-              {applications.length === 0 ? (
+              {loadingApps ? (
+                <div className="glass-panel" style={{ padding: '3rem', textAlign: 'center', color: 'var(--text-secondary)' }}>
+                  <p>Chargement de vos candidatures...</p>
+                </div>
+              ) : applications.length === 0 ? (
                 <div className="glass-panel" style={{ padding: '3rem', textAlign: 'center', color: 'var(--text-secondary)' }}>
                   <p>Aucune candidature pour le moment. Commencez par en ajouter une !</p>
                 </div>
