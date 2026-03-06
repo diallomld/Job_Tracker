@@ -12,6 +12,7 @@
     "test:ui": "vitest --ui"
   },
   "dependencies": {
+    "@posthog/react": "^1.8.2",
     "@supabase/supabase-js": "^2.98.0",
     "posthog-js": "^1.359.1",
     "react": "^18.3.1",

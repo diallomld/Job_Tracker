@@ -6,7 +6,7 @@ import { Auth } from './components/Auth';
 import { UserProfile } from './components/UserProfile';
 import { TodoManager } from './components/TodoManager';
 import { Footer } from './components/Footer';
-import posthog from 'posthog-js';
+import { usePostHog } from '@posthog/react';
 import { supabase } from './lib/supabase';
 import './App.css';
 
@@ -32,6 +32,7 @@ const initialApplications = [
 ];
 
 function App() {
+  const posthog = usePostHog();
   const [session, setSession] = useState(null);
   const [applications, setApplications] = useState([]);
   const [loadingApps, setLoadingApps] = useState(false);

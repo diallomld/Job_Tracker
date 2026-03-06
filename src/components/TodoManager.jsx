@@ -2,10 +2,11 @@ import React, { useState, useEffect } from 'react';
 import { supabase } from '../lib/supabase';
 import { TodoForm } from './TodoForm';
 import { TodoItem } from './TodoItem';
-import posthog from 'posthog-js';
+import { usePostHog } from '@posthog/react';
 import styles from './TodoManager.module.css';
 
 export function TodoManager({ session }) {
+    const posthog = usePostHog();
     const [todos, setTodos] = useState([]);
     const [loading, setLoading] = useState(true);
     const [view, setView] = useState('list'); // 'list' or 'kanban'
