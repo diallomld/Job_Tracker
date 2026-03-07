@@ -7,9 +7,9 @@ export default defineConfig({
   plugins: [
     react(),
     sentryVitePlugin({
-      org: "horizon-tech", // Remplacez par votre ID d'organisation Sentry si différent
+      org: "horizon-tech",
       project: "job-tracker",
-      //authToken: process.env.SENTRY_AUTH_TOKEN,
+      telemetry: false,
     }),
   ],
   build: {
