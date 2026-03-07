@@ -19,9 +19,6 @@ export function Dashboard({ applications }) {
 
     return (
         <div className={styles.dashboardContainer}>
-            <button onClick={() => { throw new Error("Test Sentry React 18"); }}>
-                Casser l'application pour des test
-            </button>
             {stats.map((stat, index) => (
                 <div
                     key={index}
