@@ -77,4 +77,6 @@ jobs:
       - name: Install
         run: npm ci
       - name: Build
+        env:
+          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
         run: npm run build

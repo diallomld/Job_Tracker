@@ -5,21 +5,24 @@ import * as Sentry from "@sentry/react";
 import App from './App.jsx'
 import './index.css'
 
-console.log("Initializing Sentry with DSN:", import.meta.env.VITE_SENTRY_DSN);
-
 Sentry.init({
   dsn: import.meta.env.VITE_SENTRY_DSN,
-  debug: true, // Enable debug mode to see internal logs
+  release: "job-tracker@1.0.0",
   integrations: [
     Sentry.browserTracingIntegration(),
     Sentry.replayIntegration(),
   ],
   // Performance Monitoring
   tracesSampleRate: 1.0,
-  tracePropagationTargets: ["localhost", /^https:\/\/hpwipjnqjlgiszgpdpnv\.supabase\.co/],
+  tracePropagationTargets: [
+    "localhost",
+    /^https:\/\/hpwipjnqjlgiszgpdpnv\.supabase\.co/,
+    /^https:\/\/.*\.vercel\.app/
+  ],
   // Session Replay
   replaysSessionSampleRate: 0.1,
   replaysOnErrorSampleRate: 1.0,
+  sendDefaultPii: true,
 });
 
 const options = {
