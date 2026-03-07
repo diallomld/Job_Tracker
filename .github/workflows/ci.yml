@@ -7,30 +7,74 @@ on:
     branches: [ master, main ]
 
 jobs:
-  build-and-test:
+  install:
+    name: 📦 Install Dependencies
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v3
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
         with:
           node-version: '20'
           cache: 'npm'
-
-      - name: Install dependencies
+      - name: Install
         run: npm ci
 
-      - name: Lint code
+  lint:
+    name: 🧹 Lint Check
+    needs: install
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: '20'
+          cache: 'npm'
+      - name: Install
+        run: npm ci
+      - name: Lint
         run: npm run lint
 
-      - name: Security Audit
+  security:
+    name: 🛡️ Security Audit
+    needs: install
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: '20'
+          cache: 'npm'
+      - name: Install
+        run: npm ci
+      - name: Audit
         run: npm audit --audit-level=high
 
-      - name: Run Tests
+  test:
+    name: 🧪 Unit Tests
+    needs: install
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: '20'
+          cache: 'npm'
+      - name: Install
+        run: npm ci
+      - name: Test
         run: npm run test -- --run
 
+  build:
+    name: 🏗️ Production Build
+    needs: [lint, security, test]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: '20'
+          cache: 'npm'
+      - name: Install
+        run: npm ci
       - name: Build
         run: npm run build

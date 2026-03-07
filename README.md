@@ -1,6 +1,8 @@
 # 🚀 Job Tracker App - SaaS Job Tracking
 
 [![Frontend CI](https://github.com/diallomld/Job_Tracker/actions/workflows/ci.yml/badge.svg)](https://github.com/diallomld/Job_Tracker/actions/workflows/ci.yml)
+[![Security Audit](https://img.shields.io/badge/Security-Audit--High-brightgreen?logo=github-actions)](https://github.com/diallomld/Job_Tracker/actions)
+[![Code Quality](https://img.shields.io/badge/Quality-Lint--Strict-blue?logo=eslint)](https://github.com/diallomld/Job_Tracker/actions)
 
 Une application moderne et élégante pour gérer vos candidatures et vos tâches, avec un tableau Kanban, des statistiques en temps réel et une synchronisation cloud via Supabase.
 
