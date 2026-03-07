@@ -43,4 +43,39 @@ describe('ApplicationCard', () => {
         expect(onDragStart).toHaveBeenCalled();
         expect(onDragStart.mock.calls[0][1]).toBe('123'); // Check if ID is passed
     });
+
+    it('does not render url link when url is missing', () => {
+        const appNoUrl = { ...mockApp, url: undefined };
+        render(<ApplicationCard application={appNoUrl} onDelete={() => { }} onDragStart={() => { }} />);
+        expect(screen.queryByTitle("Voir l'offre")).not.toBeInTheDocument();
+    });
+
+    it('does not render notes section when notes is missing', () => {
+        const appNoNotes = { ...mockApp, notes: undefined };
+        render(<ApplicationCard application={appNoNotes} onDelete={() => { }} onDragStart={() => { }} />);
+        expect(screen.queryByText('Some important notes')).not.toBeInTheDocument();
+    });
+
+    it('renders empty date when date is missing', () => {
+        const appNoDate = { ...mockApp, date: undefined };
+        render(<ApplicationCard application={appNoDate} onDelete={() => { }} onDragStart={() => { }} />);
+        // Should render without crashing
+        expect(screen.getByText('TestCorp')).toBeInTheDocument();
+    });
+
+    it('renders all status labels correctly', () => {
+        const statuses = [
+            { status: 'interview', label: 'Entretien' },
+            { status: 'followup', label: 'À relancer' },
+            { status: 'accepted', label: 'Accepté' },
+            { status: 'rejected', label: 'Refusé' },
+        ];
+        for (const { status, label } of statuses) {
+            const { unmount } = render(
+                <ApplicationCard application={{ ...mockApp, status }} onDelete={() => { }} onDragStart={() => { }} />
+            );
+            expect(screen.getByText(label)).toBeInTheDocument();
+            unmount();
+        }
+    });
 });

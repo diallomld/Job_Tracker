@@ -24,7 +24,12 @@ export default defineConfig({
       provider: 'v8',
       reporter: ['lcov', 'text'],
       include: ['src/**/*.{js,jsx}'],
-      exclude: ['src/__tests__/**', 'src/setupTests.js'],
+      exclude: [
+        'src/__tests__/**',
+        'src/setupTests.js',
+        'src/lib/supabase.js',  // Config-only file, no business logic
+        'src/main.jsx',          // Entry point, not unit-testable
+      ],
     },
   },
 })
