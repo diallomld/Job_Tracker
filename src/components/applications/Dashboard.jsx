@@ -19,6 +19,9 @@ export function Dashboard({ applications }) {
 
     return (
         <div className={styles.dashboardContainer}>
+            <button className="btn btn-secondary" style={{ marginBottom: '1rem', width: '100%' }} onClick={() => { throw new Error("Sentry Test Error from Antigravity"); }}>
+                ⚠️ Trigger Test Error (Sentry Verification)
+            </button>
             {stats.map((stat, index) => (
                 <div
                     key={index}
