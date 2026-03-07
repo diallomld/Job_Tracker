@@ -132,8 +132,12 @@
         grid-template-columns: 1fr;
     }
 
-    .tableHeader,
-    .tableContainer {
+    .tableHeader {
         display: none;
+    }
+
+    .tableContainer {
+        border: none;
+        background: transparent;
     }
 }

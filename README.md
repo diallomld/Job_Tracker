@@ -18,10 +18,12 @@ Une application moderne et élégante pour gérer vos candidatures et vos tâche
     - Priorités (Basse, Moyenne, Haute), Tags et dates d'échéance.
     - Drag & Drop pour l'avancement des tâches.
 - **Analytics & Tracking** :
-    - Intégration **PostHog** pour le suivi du comportement utilisateur.
+    - Intégration **PostHog** pour le suivi du comportement utilisateur et Product Analytics.
+    - **Sentry** (Monitoring d'erreurs en temps réel) avec support des Source Maps pour un débogage précis.
     - Session Replays (vidéos de navigation) et Event Tracking.
 - **Thème Premium** : Design moderne avec Glassmorphisme et Dark Mode natif.
 - **Persistence Cloud** : Synchronisation en temps réel via Supabase PostgreSQL.
+- **Architecture Pro** : Reorganisation par domaines (`applications`, `auth`, `todo`, `common`).
 
 ## 🚀 Installation Locale
 
@@ -30,18 +32,21 @@ Une application moderne et élégante pour gérer vos candidatures et vos tâche
 3. Configurez votre fichier `.env.local` :
    ```env
    VITE_SUPABASE_URL=votre_url_supabase
-   VITE_SUPABASE_ANON_KEY=votre_cle_anon
-   VITE_PUBLIC_POSTHOG_KEY=votre_cle_posthog
-   VITE_PUBLIC_POSTHOG_HOST=https://us.i.posthog.com
-   ```
+    VITE_SUPABASE_ANON_KEY=votre_cle_anon
+    VITE_PUBLIC_POSTHOG_KEY=votre_cle_posthog
+    VITE_PUBLIC_POSTHOG_HOST=https://us.i.posthog.com
+    VITE_SENTRY_DSN=votre_dsn_sentry
+    SENTRY_AUTH_TOKEN=votre_token_sentry (requis seulement pour le build/source maps)
+    ```
 4. Lancez le serveur : `npm run dev`.
 
 ## 🚀 Déploiement sur Vercel
 
 1. **GitHub** : Poussez votre code sur un dépôt GitHub.
-2. **Vercel** : Importez le projet depui le dashboard Vercel.
+2. **Vercel** : Importez le projet depuis le dashboard Vercel.
 3. **Variables d'environnement** :
-   - Ajoutez `VITE_SUPABASE_URL`, `VITE_SUPABASE_ANON_KEY`, `VITE_PUBLIC_POSTHOG_KEY` et `VITE_PUBLIC_POSTHOG_HOST`.
+   - Ajoutez `VITE_SUPABASE_URL`, `VITE_SUPABASE_ANON_KEY`, `VITE_PUBLIC_POSTHOG_KEY`, `VITE_PUBLIC_POSTHOG_HOST` et `VITE_SENTRY_DSN`.
+   - Ajoutez `SENTRY_AUTH_TOKEN` (secret) pour permettre l'upload des Source Maps lors du build.
 4. **Build** : Vercel déploiera l'application automatiquement à chaque push.
 
 ## 🧪 Tests

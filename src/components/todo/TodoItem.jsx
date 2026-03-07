@@ -1,13 +1,17 @@
 import styles from './TodoItem.module.css';
 
-export function TodoItem({ todo, onDelete, isKanban = false }) {
+export function TodoItem({ todo, onDelete, onStatusChange, isKanban = false }) {
     const handleDragStart = (e) => {
         if (!isKanban) return;
         e.stopPropagation();
         e.dataTransfer.effectAllowed = 'move';
         e.dataTransfer.setData('todoId', todo.id);
-        // Required for Firefox and generic DnD support
         e.dataTransfer.setData('text/plain', todo.id);
+    };
+
+    const toggleComplete = () => {
+        const newStatus = todo.status === 'done' ? 'todo' : 'done';
+        onStatusChange(todo.id, newStatus);
     };
 
     const formatDate = (dateStr) => {
@@ -20,14 +24,22 @@ export function TodoItem({ todo, onDelete, isKanban = false }) {
         });
     };
 
+    const isDone = todo.status === 'done';
+
     if (isKanban) {
         return (
             <div
-                className={styles.kanbanCard}
+                className={`${styles.kanbanCard} ${isDone ? styles.completed : ''}`}
                 draggable="true"
                 onDragStart={handleDragStart}
             >
-                <div className={styles.cell}>
+                <div className={styles.kanbanHeader}>
+                    <input
+                        type="checkbox"
+                        checked={isDone}
+                        onChange={toggleComplete}
+                        className={styles.checkbox}
+                    />
                     <span className={styles.title}>{todo.title}</span>
                 </div>
                 <div className={styles.meta}>
@@ -55,8 +67,14 @@ export function TodoItem({ todo, onDelete, isKanban = false }) {
     }
 
     return (
-        <div className={styles.todoRow}>
+        <div className={`${styles.todoRow} ${isDone ? styles.completedRow : ''}`}>
             <div className={styles.cell}>
+                <input
+                    type="checkbox"
+                    checked={isDone}
+                    onChange={toggleComplete}
+                    className={styles.checkbox}
+                />
                 <span className={styles.title}>{todo.title}</span>
             </div>
 
