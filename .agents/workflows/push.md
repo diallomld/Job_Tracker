@@ -10,9 +10,10 @@ Ce workflow permet de mettre à jour le dépôt distant en une seule étape.
 git add .
 ```
 
-2. Effectuer le commit avec un message automatique ou personnalisé
+2. Effectuer le commit avec un message descriptif généré automatiquement basé sur les changements
 ```powershell
-git commit -m "update: synchronization via antigravity workflow"
+# L'agent doit générer un message professionnel (ex: "feat: ...", "fix: ...") basé sur le contenu de git diff
+git commit -m "votre_message_dynamique_ici"
 ```
 
 3. Pousser les changements vers origin
