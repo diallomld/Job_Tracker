@@ -1,6 +1,6 @@
 import { useState } from 'react';
-import { supabase } from '../lib/supabase';
-import styles from './ApplicationForm.module.css';
+import { supabase } from '../../lib/supabase';
+import styles from '../applications/ApplicationForm.module.css';
 
 export function Auth({ onAuthSuccess }) {
     const [loading, setLoading] = useState(false);

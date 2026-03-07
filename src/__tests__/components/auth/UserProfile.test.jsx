@@ -1,9 +1,9 @@
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { vi } from 'vitest';
-import { UserProfile } from '../../components/UserProfile';
-import { supabase } from '../../lib/supabase';
+import { UserProfile } from '../../../components/auth/UserProfile';
+import { supabase } from '../../../lib/supabase';
 
-vi.mock('../../lib/supabase', () => ({
+vi.mock('../../../lib/supabase', () => ({
     supabase: {
         auth: {
             updateUser: vi.fn()

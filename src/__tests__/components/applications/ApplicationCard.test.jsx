@@ -1,6 +1,6 @@
 import { render, screen, fireEvent } from '@testing-library/react';
 import { describe, it, expect, vi } from 'vitest';
-import { ApplicationCard } from '../../components/ApplicationCard';
+import { ApplicationCard } from '../../../components/applications/ApplicationCard';
 
 describe('ApplicationCard', () => {
     const mockApp = {

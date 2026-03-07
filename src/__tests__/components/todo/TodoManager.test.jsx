@@ -1,10 +1,10 @@
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { TodoManager } from '../../components/TodoManager';
-import { supabase } from '../../lib/supabase';
+import { TodoManager } from '../../../components/todo/TodoManager';
+import { supabase } from '../../../lib/supabase';
 
 // Mock Supabase
-vi.mock('../../lib/supabase', () => ({
+vi.mock('../../../lib/supabase', () => ({
     supabase: {
         from: vi.fn(() => ({
             select: vi.fn(() => ({

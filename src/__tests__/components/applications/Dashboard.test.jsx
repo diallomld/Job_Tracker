@@ -1,6 +1,6 @@
 import { render, screen } from '@testing-library/react';
 import { describe, it, expect } from 'vitest';
-import { Dashboard } from '../../components/Dashboard';
+import { Dashboard } from '../../../components/applications/Dashboard';
 
 describe('Dashboard', () => {
     const apps = [

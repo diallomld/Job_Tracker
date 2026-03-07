@@ -1,6 +1,6 @@
 import { render, screen, fireEvent } from '@testing-library/react';
 import { describe, it, expect, vi } from 'vitest';
-import { TodoForm } from '../../components/TodoForm';
+import { TodoForm } from '../../../components/todo/TodoForm';
 
 describe('TodoForm Component', () => {
     it('rend les champs du formulaire correctement', () => {

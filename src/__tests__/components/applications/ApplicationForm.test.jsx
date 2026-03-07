@@ -1,6 +1,6 @@
 import { render, screen, fireEvent } from '@testing-library/react';
 import { describe, it, expect, vi } from 'vitest';
-import { ApplicationForm } from '../../components/ApplicationForm';
+import { ApplicationForm } from '../../../components/applications/ApplicationForm';
 
 describe('ApplicationForm', () => {
     it('renders the form with basic fields', () => {

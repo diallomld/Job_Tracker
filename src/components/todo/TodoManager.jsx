@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { supabase } from '../lib/supabase';
+import { supabase } from '../../lib/supabase';
 import { TodoForm } from './TodoForm';
 import { TodoItem } from './TodoItem';
 import { usePostHog } from '@posthog/react';

@@ -1,10 +1,10 @@
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { vi } from 'vitest';
-import { Auth } from '../../components/Auth';
-import { supabase } from '../../lib/supabase';
+import { Auth } from '../../../components/auth/Auth';
+import { supabase } from '../../../lib/supabase';
 
 // Mock du client Supabase
-vi.mock('../../lib/supabase', () => ({
+vi.mock('../../../lib/supabase', () => ({
     supabase: {
         auth: {
             signInWithPassword: vi.fn(),

@@ -1,11 +1,11 @@
 import { useState, useEffect } from 'react';
-import { Dashboard } from './components/Dashboard';
-import { ApplicationForm } from './components/ApplicationForm';
-import { KanbanBoard } from './components/KanbanBoard';
-import { Auth } from './components/Auth';
-import { UserProfile } from './components/UserProfile';
-import { TodoManager } from './components/TodoManager';
-import { Footer } from './components/Footer';
+import { Dashboard } from './components/applications/Dashboard';
+import { ApplicationForm } from './components/applications/ApplicationForm';
+import { KanbanBoard } from './components/applications/KanbanBoard';
+import { Auth } from './components/auth/Auth';
+import { UserProfile } from './components/auth/UserProfile';
+import { TodoManager } from './components/todo/TodoManager';
+import { Footer } from './components/common/Footer';
 import { usePostHog } from '@posthog/react';
 import { supabase } from './lib/supabase';
 import './App.css';
