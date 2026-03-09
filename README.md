@@ -58,7 +58,7 @@ npm run test
 ```
 ## Screenshots
 
-DEMO LOGN
+DEMO LOGN: demo@demo.com/Passer@1
 <img width="428" height="257" alt="image" src="https://github.com/user-attachments/assets/01f0deb7-1698-4202-8734-3255356df972" />
 
 
