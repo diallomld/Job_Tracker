@@ -99,7 +99,7 @@ export function Auth({ onAuthSuccess }) {
                             id="email"
                             className={styles.inputField}
                             type="email"
-                            placeholder="votre@email.com"
+                            placeholder="Enter demo@demo.com"
                             value={email}
                             required
                             onChange={(e) => setEmail(e.target.value)}
@@ -113,7 +113,7 @@ export function Auth({ onAuthSuccess }) {
                                 id="password"
                                 className={styles.inputField}
                                 type="password"
-                                placeholder="••••••••"
+                                placeholder="Enter Passer@1"
                                 value={password}
                                 required
                                 onChange={(e) => setPassword(e.target.value)}
