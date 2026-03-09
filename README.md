@@ -58,6 +58,10 @@ npm run test
 ```
 ## Screenshots
 
+DEMO LOGN
+<img width="428" height="257" alt="image" src="https://github.com/user-attachments/assets/01f0deb7-1698-4202-8734-3255356df972" />
+
+
 <img width="1517" height="868" alt="saas_dashboard" src="https://github.com/user-attachments/assets/767f94bc-0734-4571-b3ed-92998d00c322" />
 <img width="1894" height="955" alt="sentry_track_error" src="https://github.com/user-attachments/assets/9f0436a6-76b6-41aa-b665-1d34603cfe80" />
 <img width="1912" height="882" alt="sentry1" src="https://github.com/user-attachments/assets/f1d042cd-b9db-4214-887b-4979f0afbeac" />
